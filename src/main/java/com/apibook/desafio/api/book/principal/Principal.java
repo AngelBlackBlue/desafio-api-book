@@ -6,8 +6,10 @@ import com.apibook.desafio.api.book.service.ConsumoAPI;
 import com.apibook.desafio.api.book.service.ConvierteDatos;
 
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Principal {
@@ -51,8 +53,15 @@ public class Principal {
             System.out.println("Libro no encontrado");
         }
 
-
-
+        //Estadisticas
+        DoubleSummaryStatistics est = datos.resultados().stream()
+                .filter(d -> d.numeroDeDescargas() > 0)
+                .collect(Collectors.summarizingDouble(DatosLibros::numeroDeDescargas));
+        System.out.println("Cantidad media de descarga: " + est.getAverage());
+        System.out.println("Cantidad maxima de desacarga: " + est.getMax());
+        System.out.println("Cantidad minima de desacraga: " + est.getMin());
+        System.out.println("Suma total de descargas: " + est.getSum());
+        System.out.println("Cantidad de registros : " + est.getCount());
 
     }
 }
