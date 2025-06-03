@@ -25,20 +25,22 @@ public class Principal {
     public void muestraElMenu(){
 
         var json = consumoAPI.obtenerDatos(URL_BASE);
-        System.out.println(json);
+//        System.out.println(json);
         var datos = convierteDatos.obtenerDatos(json, Datos.class);
-        System.out.println(datos);
+//        System.out.println(datos);
 
         //Top 10 libros más de desargados
-        System.out.println("Top 10 libros más de desargados");
+        System.out.println("\n***** Top 10 libros más de desargados ***** \n");
         datos.resultados().stream()
                 .sorted(Comparator.comparing(DatosLibros::numeroDeDescargas).reversed())
                 .limit(10)
                 .map(l -> l.titulo().toUpperCase())
                 .forEach(System.out::println);
 
+        System.out.println("\n******************************************\n");
+
         //Busqueda de libros por nombre
-        System.out.println("Ingrese el nombre del libro que desea buscar");
+        System.out.println("Ingrese el nombre del libro que desea buscar:");
         var tituloLibro = teclado.nextLine();
         json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ", "+" ));
         var datosBuscados = convierteDatos.obtenerDatos(json, Datos.class);
@@ -47,13 +49,14 @@ public class Principal {
                 .findFirst();
 
         if(libroBuscado.isPresent()){
-            System.out.println("Libro Encontrado: ");
+            System.out.println("\nLibro Encontrado:\n");
             System.out.println(libroBuscado.get());
         }else {
-            System.out.println("Libro no encontrado");
+            System.out.println("\nLibro no encontrado\n");
         }
 
         //Estadisticas
+        System.out.println("\n******* Estadisticas ***************\n");
         DoubleSummaryStatistics est = datos.resultados().stream()
                 .filter(d -> d.numeroDeDescargas() > 0)
                 .collect(Collectors.summarizingDouble(DatosLibros::numeroDeDescargas));
@@ -62,6 +65,7 @@ public class Principal {
         System.out.println("Cantidad minima de desacraga: " + est.getMin());
         System.out.println("Suma total de descargas: " + est.getSum());
         System.out.println("Cantidad de registros : " + est.getCount());
+        System.out.println("\n**********************************\n");
 
     }
 }
